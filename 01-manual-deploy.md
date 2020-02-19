@@ -2,12 +2,13 @@
 
 ## Deploy app to Jenkins on OCP 3.11
 
-**Note:**
-
 For these exercises you will be asked for a `{dev-namespace}`. That value should be the name 
 you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
 
 ### Provision Jenkins ephemeral
+
+Jenkins ephemeral provides a kubernetes native version of Jenkins that dynamically provisions build agents on-demand. It's
+_ephemeral_ meaning it doesn't allocate any persistent storage in the cluster.
 
 1. Log into the cluster following the instructions on the `Access` tab of the cluster page
 2. Run the following command to provision the Jenkins instance in your namespace
@@ -27,7 +28,8 @@ to expedite things.
 1. Open a browser to https://github.com/ibm-garage-cloud/template-node-typescript
 2. Click the green `Use this template` button
 3. On the following page, select the FastStart git org for the owner and give the repo a name
-4. Click `Create repository from template`
+4. Click `Create repository from template`, select the `faststart-dev-lab` org, and give the repo a unique name.
+5. Once you press `Create` it will fork the repo without the history into the new repo.
 
 ### Create the ConfigMap and Secret to describe the cluster
 
@@ -102,6 +104,9 @@ where:
 
 ### Create git secret
 
+In order for Jenkins have access to the git repository, particularly if it is a private repository, a Kubernetes secret 
+needs to be added that contains the git credentials.
+
 1. Copy the following into a file called `gitsecret.yaml` and update the {Name}, {Git-Repo-URL}, {Git-Username}, and {Git-PAT}
 
 ```
@@ -138,6 +143,9 @@ where:
 
 ### Create the build config
 
+On OpenShift 3.11, Jenkins is built into the OpenShift pipelines and the build pipelines can be managed using Kubernetes 
+custom resources. We will create one by hand to create the build pipeline for our new application.
+
 1. Copy the following into a file called `buildconfig.yaml` and update the {Name}, {Secret}, {Git-Repo-URL}, and {Namespace}
 
 ```
@@ -171,7 +179,7 @@ where:
 
 2. Log into the cluster following the instructions on the `Access` tab of the cluster page
 
-3. Create the buildconfig in the cluster
+3. Create the buildconfig resource in the cluster
 
 ```
 kubectl create -n {dev-namespace} -f buildconfig.yaml
@@ -219,6 +227,9 @@ In our case `{secret}` will be `my-secret-value`
 7. Go to the Build pipeline page in the OpenShift console to see that the build was triggered
 
 ### Bind the credentials for the cloudant database into the cluster
+
+In order to use a service within the cluster, the service credentials should be added to the cluster as a secret. For
+this step, an existing Cloudant service has been created within the resource group that we will bind into the cluster.
 
 1. Log into the ibmcloud environment
 
