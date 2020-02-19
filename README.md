@@ -7,6 +7,18 @@
 For these exercises you will be asked for a `<dev-namespace>`. That value should be the name 
 you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
 
+### Provision Jenkins ephemeral
+
+1. Log into the cluster following the instructions on the `Access` tab of the cluster page
+2. Run the following command to provision the Jenkins instance in your namespace
+
+```
+oc new-app jenkins-ephemeral -n "<dev-namespace>"
+```
+
+3. Open the OpenShift console and navigate to your project/namespace (i.e. user01-dev) to see the Jenkins instance running
+
+
 ### Create a project from the template in the FastStart git org
 
 For the lab, we need a deployable application to run the pipeline. We will use a pre-built Code Pattern
