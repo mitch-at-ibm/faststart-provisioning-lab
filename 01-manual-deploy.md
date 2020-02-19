@@ -2,8 +2,16 @@
 
 ## Deploy app to Jenkins on OCP 3.11
 
-For these exercises you will be asked for a `{dev-namespace}`. That value should be the name 
+For these exercises you will be asked for a `dev-namespace`. That value should be the name 
 you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
+
+### Set an environment variable for your namespace
+
+1. Export an environment variable. This will be used 
+
+```
+export dev-namespace="userXX-dev"
+```
 
 ### Provision Jenkins ephemeral
 
@@ -14,7 +22,7 @@ _ephemeral_ meaning it doesn't allocate any persistent storage in the cluster.
 2. Run the following command to provision the Jenkins instance in your namespace
 
 ```
-oc new-app jenkins-ephemeral -n "{dev-namespace}"
+oc new-app jenkins-ephemeral -n "${dev-namespace}"
 ```
 
 3. Open the OpenShift console and navigate to your project/namespace (i.e. user01-dev) to see the Jenkins instance running
@@ -96,11 +104,11 @@ where:
 5. Create the resources in the cluster
 
 ```
-kubectl create -n {dev-namespace} -f ibmcloud-config.yaml
+kubectl create -n ${dev-namespace} -f ibmcloud-config.yaml
 ```
 
 where:
- - `{dev-namespace}` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
+ - `${dev-namespace}` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
 
 ### Create git secret
 
@@ -135,11 +143,11 @@ where:
 3. Create the secret in the cluster
 
 ```
-kubectl create -n {dev-namespace} -f gitsecret.yaml
+kubectl create -n ${dev-namespace} -f gitsecret.yaml
 ```
 
 where:
- - `{dev-namespace}` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
+ - `${dev-namespace}` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
 
 ### Create the build config
 
@@ -182,16 +190,16 @@ where:
 3. Create the buildconfig resource in the cluster
 
 ```
-kubectl create -n {dev-namespace} -f buildconfig.yaml
+kubectl create -n ${dev-namespace} -f buildconfig.yaml
 ```
 
 where:
- - `{dev-namespace}` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
+ - `${dev-namespace}` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
 
 ### View the pipeline in the OpenShift console
 
 1. Open the OpenShift console for the cluster
-2. Select your project/namespace (i.e. `{dev-namespace}`)
+2. Select your project/namespace (i.e. `${dev-namespace}`)
 3. Select Builds -} Pipelines
 4. The build pipeline that was created in the previous step should appear
 5. Manually trigger the pipeline by pressing the `Build` button
@@ -201,12 +209,12 @@ where:
 1. Run the following to get the webhook details from the build config 
 
 ```
-kubectl describe bc {Name} -n {dev-namespace}
+kubectl describe bc {Name} -n ${dev-namespace}
 ```
 
 where:
  - `{Name}` is the name used in the previous step for the build config
- - `{dev-namespace}` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
+ - `${dev-namespace}` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
 
 The webhook url will have a structure similar to:
 
@@ -240,17 +248,17 @@ ibmcloud login -r us-south -g {resource-group} [--sso]
 2. Run the following command to bind the credentials into the cluster
 
 ```
-ibmcloud ks cluster service bind --cluster {CLUSTER_NAME} --namespace {dev-namespace} --service {SERVICE_NAME} --key faststart-key
+ibmcloud ks cluster service bind --cluster {CLUSTER_NAME} --namespace ${dev-namespace} --service {SERVICE_NAME} --key faststart-key
 ```
 
 where:
  - `{CLUSTER_NAME}` is the name of the cluster
- - `{dev-namespace}` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
+ - `${dev-namespace}` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
  - `{SERVICE_NAME}` is the name of the cloudant service (either faststart-one-cloudant or faststart-two-cloudant)
 
 **Note**: the value `faststart-key` for the key works because we created that key ahead of time
 
-3. Open the OpenShift console and select the `{dev-namespace}` project
+3. Open the OpenShift console and select the `${dev-namespace}` project
    
 4. Select Resources -} Secrets. Select the `binding-...` secret from the list
    
