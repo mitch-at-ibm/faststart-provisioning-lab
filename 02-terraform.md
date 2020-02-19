@@ -17,7 +17,7 @@ Each module has the same basic structure:
 
 1. Clone the faststart iteration-zero repo - https://github.com/ibm-garage-cloud/iteration-zero-faststart
 2. Copy `credentials.template` into a file named `credentials.properties`
-3. In `credentials.properties`, replace <IBMCLOUD_API_KEY> with the APIKEY from the top of the box note
+3. In `credentials.properties`, replace {IBMCLOUD_API_KEY} with the APIKEY from the top of the box note
 4. Open `terraform/settings/environment.tfvars". Set the 'cluster_name' and the 'resource_group_name' to 
 match the cluster you've been assigned
 
