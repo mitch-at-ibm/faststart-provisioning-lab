@@ -1,10 +1,10 @@
-# Step 1 - Manual deploy 
+# Part 1 - Manual deploy 
 
 ## Deploy app to Jenkins on OCP 3.11
 
 **Note:**
 
-For these exercises you will be asked for a `<dev-namespace>`. That value should be the name 
+For these exercises you will be asked for a `{dev-namespace}`. That value should be the name 
 you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
 
 ### Provision Jenkins ephemeral
@@ -13,7 +13,7 @@ you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
 2. Run the following command to provision the Jenkins instance in your namespace
 
 ```
-oc new-app jenkins-ephemeral -n "<dev-namespace>"
+oc new-app jenkins-ephemeral -n "{dev-namespace}"
 ```
 
 3. Open the OpenShift console and navigate to your project/namespace (i.e. user01-dev) to see the Jenkins instance running
@@ -63,15 +63,15 @@ metadata:
   name: ibmcloud-config
 data:
   APIURL: 'https://cloud.ibm.com'
-  CLUSTER_NAME: <CLUSTER_NAME>
+  CLUSTER_NAME: {CLUSTER_NAME}
   CLUSTER_TYPE: openshift
-  INGRESS_SUBDOMAIN: <INGRESS_SUBDOMAIN>
+  INGRESS_SUBDOMAIN: {INGRESS_SUBDOMAIN}
   REGION: us-south
-  REGISTRY_NAMESPACE: <REGISTRY_NAMESPACE>
+  REGISTRY_NAMESPACE: {REGISTRY_NAMESPACE}
   REGISTRY_URL: us.icr.io
-  RESOURCE_GROUP: <RESOURCE_GROUP>
-  SERVER_URL: <MASTER_URL>
-  TLS_SECRET_NAME: <TLS_SECRET_NAME>
+  RESOURCE_GROUP: {RESOURCE_GROUP}
+  SERVER_URL: {MASTER_URL}
+  TLS_SECRET_NAME: {TLS_SECRET_NAME}
 ---
 apiVersion: v1
 kind: Secret
@@ -82,27 +82,27 @@ metadata:
   name: ibmcloud-apikey
 type: Opaque
 stringData:
-  APIKEY: <APIKEY>
+  APIKEY: {APIKEY}
   REGISTRY_USER: iamapikey
 ```
 
 where:
- - `<APIKEY>` is the one provided in the box note
+ - `{APIKEY}` is the one provided in the box note
 
 4. Log into the cluster following the instructions on the `Access` tab of the cluster page
    
 5. Create the resources in the cluster
 
 ```
-kubectl create -n <dev-namespace> -f ibmcloud-config.yaml
+kubectl create -n {dev-namespace} -f ibmcloud-config.yaml
 ```
 
 where:
- - `<dev-namespace>` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
+ - `{dev-namespace}` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
 
 ### Create git secret
 
-1. Copy the following into a file called `gitsecret.yaml` and update the <Name>, <Git-Repo-URL>, <Git-Username>, and <Git-PAT>
+1. Copy the following into a file called `gitsecret.yaml` and update the {Name}, {Git-Repo-URL}, {Git-Username}, and {Git-PAT}
 
 ```
 apiVersion: v1
@@ -111,12 +111,12 @@ metadata:
     build.openshift.io/source-secret-match-uri-1: https://github.com/ibm-garage-cloud/*
   labels:
     jenkins.io/credentials-type: usernamePassword
-  name: <Name>
+  name: {Name}
 type: kubernetes.io/basic-auth
 stringData:
-  url: <Git-Repo-URL>
-  username: <Git-Username>
-  password: <Git-PAT>
+  url: {Git-Repo-URL}
+  username: {Git-Username}
+  password: {Git-PAT}
 ```
 
 where:
@@ -130,21 +130,21 @@ where:
 3. Create the secret in the cluster
 
 ```
-kubectl create -n <dev-namespace> -f gitsecret.yaml
+kubectl create -n {dev-namespace} -f gitsecret.yaml
 ```
 
 where:
- - `<dev-namespace>` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
+ - `{dev-namespace}` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
 
 ### Create the build config
 
-1. Copy the following into a file called `buildconfig.yaml` and update the <Name>, <Secret>, <Git-Repo-URL>, and <Namespace>
+1. Copy the following into a file called `buildconfig.yaml` and update the {Name}, {Secret}, {Git-Repo-URL}, and {Namespace}
 
 ```
 apiVersion: v1
 kind: BuildConfig
 metadata:
-  name: <Name>
+  name: {Name}
 spec:
   triggers:
   - type: GitHub
@@ -152,7 +152,7 @@ spec:
       secret: my-secret-value
   source:
     git:
-      uri: <Git-Repo-URL>
+      uri: {Git-Repo-URL}
       ref: master
   strategy:
     jenkinsPipelineStrategy:
@@ -161,7 +161,7 @@ spec:
       - name: CLOUD_NAME
         value: openshift
       - name: NAMESPACE
-        value: <Namespace>
+        value: {Namespace}
 ```
 
 where:
@@ -174,17 +174,17 @@ where:
 3. Create the buildconfig in the cluster
 
 ```
-kubectl create -n <dev-namespace> -f buildconfig.yaml
+kubectl create -n {dev-namespace} -f buildconfig.yaml
 ```
 
 where:
- - `<dev-namespace>` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
+ - `{dev-namespace}` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
 
 ### View the pipeline in the OpenShift console
 
 1. Open the OpenShift console for the cluster
-2. Select your project/namespace (i.e. `<dev-namespace>`)
-3. Select Builds -> Pipelines
+2. Select your project/namespace (i.e. `{dev-namespace}`)
+3. Select Builds -} Pipelines
 4. The build pipeline that was created in the previous step should appear
 5. Manually trigger the pipeline by pressing the `Build` button
 
@@ -193,18 +193,18 @@ where:
 1. Run the following to get the webhook details from the build config 
 
 ```
-kubectl describe bc <Name> -n <dev-namespace>
+kubectl describe bc {Name} -n {dev-namespace}
 ```
 
 where:
- - `<Name>` is the name used in the previous step for the build config
- - `<dev-namespace>` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
+ - `{Name}` is the name used in the previous step for the build config
+ - `{dev-namespace}` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
 
 The webhook url will have a structure similar to:
 
-`http://<openshift_api_host:port>/oapi/v1/namespaces/<namespace>/buildconfigs/<name>/webhooks/<secret>/generic`
+`http://{openshift_api_host:port}/oapi/v1/namespaces/{namespace}/buildconfigs/{name}/webhooks/{secret}/generic`
 
-In our case `<secret>` will be `my-secret-value`
+In our case `{secret}` will be `my-secret-value`
 
 2. Open a browser to the GitHub repo deployed in the previous step in the build config
 
@@ -229,19 +229,19 @@ ibmcloud login -r us-south -g {resource-group} [--sso]
 2. Run the following command to bind the credentials into the cluster
 
 ```
-ibmcloud ks cluster service bind --cluster <CLUSTER_NAME> --namespace <dev-namespace> --service <SERVICE_NAME> --key faststart-key
+ibmcloud ks cluster service bind --cluster {CLUSTER_NAME} --namespace {dev-namespace} --service {SERVICE_NAME} --key faststart-key
 ```
 
 where:
- - `<CLUSTER_NAME>` is the name of the cluster
- - `<dev-namespace>` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
- - `<SERVICE_NAME>` is the name of the cloudant service (either faststart-one-cloudant or faststart-two-cloudant)
+ - `{CLUSTER_NAME}` is the name of the cluster
+ - `{dev-namespace}` should be the name you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
+ - `{SERVICE_NAME}` is the name of the cloudant service (either faststart-one-cloudant or faststart-two-cloudant)
 
 **Note**: the value `faststart-key` for the key works because we created that key ahead of time
 
-3. Open the OpenShift console and select the `<dev-namespace>` project
+3. Open the OpenShift console and select the `{dev-namespace}` project
    
-4. Select Resources -> Secrets. Select the `binding-...` secret from the list
+4. Select Resources -} Secrets. Select the `binding-...` secret from the list
    
 5. Press the `Reveal values` button to see the contents of the secret
 
