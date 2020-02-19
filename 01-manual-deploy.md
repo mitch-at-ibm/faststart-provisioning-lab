@@ -12,6 +12,11 @@ you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
 ```
 export DEV_NAMESPACE="userXX-dev"
 ```
+### Create a new namespace
+
+```
+oc create namespace "${DEV_NAMESPACE}"
+```
 
 ### Provision Jenkins ephemeral
 
