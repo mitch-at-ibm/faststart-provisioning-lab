@@ -2,7 +2,7 @@
 
 ## Deploy app to Jenkins on OCP 3.11
 
-For these exercises you will be asked for a `DEV_NAMESPACE`. That value should be the name 
+For these exercises you will be asked for a `dev-namespace`. That value should be the name 
 you claimed in the box note prefixed to `-dev` (e.g. user01-dev)
 
 ### Set an environment variable for your namespace
@@ -195,7 +195,7 @@ where:
 3. Create the buildconfig resource in the cluster
 
 ```
-kubectl create -n ${DEV_NAMESPACE} -f buildconfig.yaml
+oc create -n ${DEV_NAMESPACE} -f buildconfig.yaml
 ```
 
 where:
